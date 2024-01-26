@@ -5,6 +5,7 @@ import vehicleTypeSlice from "./features/vehicles/vehicleTypeSlice";
 import languagesSlice from "./features/languages/languagesSlice";
 import reportsSlice from "./features/reports/reportsSlice";
 import notificationsSlice from "./features/notifications/notificationsSlice";
+import DocsSlice from "./features/DriverDocs/DocsSlice";
 
 export interface RootState {
   auth: ReturnType<typeof AuthSlice>;
@@ -33,6 +34,11 @@ export interface RootStateNotif {
   notifications: ReturnType<typeof notificationsSlice>;
 }
 
+export interface RootStateDrvierDocs {
+  data(data: any): unknown;
+  driverdocs: ReturnType<typeof DocsSlice>;
+}
+
 const store = configureStore({
   reducer: {
     auth: AuthSlice,
@@ -41,6 +47,7 @@ const store = configureStore({
     languages: languagesSlice,
     reports: reportsSlice,
     notifications: notificationsSlice,
+    driverdocs: DocsSlice,
   },
 });
 

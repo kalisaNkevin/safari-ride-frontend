@@ -112,8 +112,8 @@ Footer.defaultProps = {
   company: { href: "/", name: "Safari ride" },
   links: [
     { href: "/", name: "Safari ride" },
-    { href: "/#about", name: "About Us" },
-    { href: "/#features", name: "Features" },
+    { href: "/", name: "About Us" },
+    { href: "/", name: "Features" },
   ],
 };
 

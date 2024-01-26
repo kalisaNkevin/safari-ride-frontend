@@ -1,26 +1,3 @@
-/* import apiUrlV1 from "utils/axiosInstance";
-
-const UpdateToken = () => {
-  return new Promise((resolve, reject) => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    apiUrlV1
-      .post("/auth/refreshToken", {
-        token: refreshToken,
-      })
-      .then((response) => {
-        const data = response.data.data;
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        resolve(data);
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-export default UpdateToken; */
-
 import apiUrlV1 from "utils/axiosInstance";
 
 interface TokenResponse {

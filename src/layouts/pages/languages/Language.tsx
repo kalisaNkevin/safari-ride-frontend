@@ -23,56 +23,46 @@ import DashboardLayout from "components/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";
-import DataTable from "components/Tables/DataTable";
-import VehicleTypeIcon from "assets/images/icons/VehicleTypeIcon.png";
 import MDButton from "components/MDButton";
 import MDInput from "components/MDInput";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
-import { RootStateVTypes } from "redux/store";
-import getVehicleTypes from "Api/getVehicleType";
-import {
-  deleteVehicleTypes,
-  setVehicleTypes,
-  updateVehicleTypes,
-} from "redux/features/vehicles/vehicleTypeSlice";
+import { RootStateLang } from "redux/store";
 import { CircularProgress } from "@mui/material";
 import apiUrlV1 from "utils/axiosInstance";
-import MDAvatar from "components/MDAvatar";
 import { ToastContainer, toast } from "react-toastify";
+import getLanguages from "Api/getLanguages";
+import {
+  deleteLanguage,
+  setLanguages,
+  updateLanguage,
+} from "redux/features/languages/languagesSlice";
 
-function VehicleType(): JSX.Element {
+function Language(): JSX.Element {
   // Get id from url
   const { id } = useParams<{ id: string }>();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const vehicleTypes = useSelector((state: RootStateVTypes) => state.vehicleTypes.results);
-  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const languages = useSelector((state: RootStateLang) => state.languages.results);
+  const [filteredLanguage, setFilteredLanguage] = useState([]);
 
   // Inputs State
-  const [getTypeName, SetTypeName] = useState<string>();
-  const [getTypeIcon, setTypeIcon] = useState<string>();
-
-  const handleChangeTypeName = (e: ChangeEvent<HTMLInputElement>) => {
-    SetTypeName(e.target.value);
-  };
-  const handleChangeTypeIcon = (e: ChangeEvent<HTMLInputElement>) => {
-    setTypeIcon(e.target.value);
-  };
+  const [getLangName, SetLangName] = useState<string>();
 
   const token = localStorage.getItem("accessToken");
   const handleDeleteBtn = () => {
     apiUrlV1
-      .delete(`/admin/vehicles/types/${id}`, {
+      .delete(`/admin/languages/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        dispatch(deleteVehicleTypes(parseInt(id)));
+        navigate("/languages");
+        dispatch(deleteLanguage(parseInt(id)));
         toast.success("Deleted successful", {
           position: "top-right",
           autoClose: 5000,
@@ -83,7 +73,6 @@ function VehicleType(): JSX.Element {
           progress: undefined,
           theme: "dark",
         });
-        navigate("/vehicle/types");
       })
       .catch((error) => {
         toast.error("Failed to delete vehicle type, try again", {
@@ -99,15 +88,18 @@ function VehicleType(): JSX.Element {
       });
   };
 
-  const handleUpdateType = (e: any) => {
+  const handleChangeLang = (e: ChangeEvent<HTMLInputElement>) => {
+    SetLangName(e.target.value);
+  };
+
+  const handleUpdateLanguage = (e: any) => {
     e.preventDefault();
 
     apiUrlV1
       .patch(
-        `/admin/vehicles/types/${id}`,
+        `/admin/languages/${id}`,
         {
-          name: getTypeName,
-          icon: getTypeIcon,
+          name: getLangName,
         },
         {
           headers: {
@@ -120,17 +112,16 @@ function VehicleType(): JSX.Element {
       .then((response) => {
         const data = response.data["data"][1];
         if (data) {
-          const newVehicleType = {
+          const newLanguage = {
             id: data.id,
             name: data.name,
-            icon: data.icon,
             active: data.active,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt,
           };
 
-          dispatch(updateVehicleTypes(newVehicleType));
-          toast.success("VehicleType updated successfully", {
+          dispatch(updateLanguage(newLanguage));
+          toast.success("Language updated successfully", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: true,
@@ -156,7 +147,7 @@ function VehicleType(): JSX.Element {
       })
       .catch((error) => {
         console.log(error.response);
-        toast.error("Couldn't update vehicle type", {
+        toast.error("Error updating a language", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -172,25 +163,24 @@ function VehicleType(): JSX.Element {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await getVehicleTypes();
-        dispatch(setVehicleTypes(userData));
+        const langs = await getLanguages();
+        dispatch(setLanguages(langs));
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    if (vehicleTypes.length === 0) {
+    if (languages.length === 0) {
       fetchData();
     } else {
-      const vType = vehicleTypes.filter((type) => type.id === parseInt(id, 10));
+      const vType = languages.filter((type) => type.id === parseInt(id, 10));
       if (vType.length != 0) {
-        setFilteredVehicles(vType);
-        SetTypeName(vType[0].name);
-        setTypeIcon(vType[0].icon);
+        setFilteredLanguage(vType);
+        SetLangName(vType[0].name);
       }
       setIsLoading(false);
     }
-  }, [dispatch, id, vehicleTypes]);
+  }, [dispatch, id, languages]);
 
   return (
     <DashboardLayout>
@@ -200,38 +190,13 @@ function VehicleType(): JSX.Element {
           {!isLoading ? (
             <>
               <Grid item xs={12} lg={9} sx={{ mx: "auto" }}>
-                <Card id="vehicleTypeDetail">
-                  <MDBox p={2}>
-                    <Grid container spacing={3} alignItems="center">
-                      <Grid item>
-                        <MDAvatar
-                          src={
-                            !filteredVehicles[0].icon ? VehicleTypeIcon : filteredVehicles[0].icon
-                          }
-                          alt={filteredVehicles[0].icon}
-                          size="xl"
-                          shadow="sm"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <MDBox height="100%" mt={0.5} lineHeight={1}>
-                          <MDTypography variant="h5" fontWeight="medium">
-                            {filteredVehicles[0].name}
-                          </MDTypography>
-                        </MDBox>
-                      </Grid>
-                    </Grid>
-                  </MDBox>
-                </Card>
-              </Grid>
-              <Grid item xs={12} lg={9} sx={{ mx: "auto" }}>
                 <Card sx={{ overflow: "visible" }}>
                   <MDBox px={3} py={5}>
-                    <MDBox component="form" role="form" onSubmit={handleUpdateType}>
+                    <MDBox component="form" role="form" onSubmit={handleUpdateLanguage}>
                       <MDBox mb={3} sx={{ display: "flex", justifyContent: "space-between" }}>
                         <MDBox>
                           <MDTypography variant="h5" fontWeight="medium">
-                            Edit Vehicle Type
+                            Edit Language
                           </MDTypography>
                         </MDBox>
                         <MDBox>
@@ -243,21 +208,11 @@ function VehicleType(): JSX.Element {
                       <MDBox mb={2}>
                         <MDInput
                           type="text"
-                          label="Type name"
+                          label="Language"
                           name="name"
+                          value={getLangName}
+                          onChange={handleChangeLang}
                           fullWidth
-                          value={getTypeName}
-                          onChange={handleChangeTypeName}
-                        />
-                      </MDBox>
-                      <MDBox mb={2}>
-                        <MDInput
-                          type="text"
-                          label="Icon Url"
-                          name="icon"
-                          fullWidth
-                          value={getTypeIcon}
-                          onChange={handleChangeTypeIcon}
                         />
                       </MDBox>
                     </MDBox>
@@ -268,7 +223,7 @@ function VehicleType(): JSX.Element {
                 <MDBox mb={3}>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
-                      <Card id="vehicleTypeDelete">
+                      <Card id="languageTypeDelete">
                         <MDBox
                           pr={3}
                           display="flex"
@@ -278,10 +233,11 @@ function VehicleType(): JSX.Element {
                         >
                           <MDBox p={3} lineHeight={1}>
                             <MDBox mb={1}>
-                              <MDTypography variant="h5">Delete vehicle type</MDTypography>
+                              <MDTypography variant="h5">Delete Language</MDTypography>
                             </MDBox>
                             <MDTypography variant="button" color="text">
-                              Once you delete this type, there is no going back. Please be certain.
+                              Once you delete this language, there is no going back. Please be
+                              certain.
                             </MDTypography>
                           </MDBox>
                           <MDBox display="flex" flexDirection={{ xs: "column", sm: "row" }}>
@@ -292,7 +248,7 @@ function VehicleType(): JSX.Element {
                                 sx={{ height: "100%" }}
                                 onClick={handleDeleteBtn}
                               >
-                                delete type
+                                delete language
                               </MDButton>
                             </MDBox>
                           </MDBox>
@@ -319,4 +275,4 @@ function VehicleType(): JSX.Element {
   );
 }
 
-export default VehicleType;
+export default Language;

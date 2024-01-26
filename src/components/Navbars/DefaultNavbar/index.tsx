@@ -161,7 +161,7 @@ function DefaultNavbar({ routes, brand, transparent, light, action }: Props): JS
 
 // Declaring default props for DefaultNavbar
 DefaultNavbar.defaultProps = {
-  brand: "GOBI Dashboard",
+  brand: "Safari ride Dashboard",
   transparent: false,
   light: false,
   action: false,

@@ -30,7 +30,7 @@ import { RootStateReports } from "redux/store";
 import getReports from "Api/getReports";
 import { deleteReport, setReports } from "redux/features/reports/reportsSlice";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
-import { CircularProgress, Icon } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import apiUrlV1 from "utils/axiosInstance";
 
@@ -153,18 +153,6 @@ function Reports(): JSX.Element {
       <MDBox py={3}>
         <Card id="Report-Problem">{generateReportContent()}</Card>
       </MDBox>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
       <Footer />
     </DashboardLayout>
   );

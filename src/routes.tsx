@@ -55,6 +55,8 @@ import Passengers from "layouts/pages/users/passenger";
 import ViewUser from "layouts/pages/users/ViewUser";
 import ResetPassword from "layouts/authentication/reset-password/cover";
 import Notifications from "layouts/pages/notifications";
+import DriverRequest from "layouts/pages/driverRequest";
+import DRequest from "layouts/pages/driverRequest/DRequest";
 
 const routes = () => {
   const { user } = useSelector<RootState, any>((state) => state.auth);
@@ -109,6 +111,13 @@ const routes = () => {
         },
         {
           protected: true,
+          name: "Driver request",
+          key: "DriverRequest",
+          route: "/driver-request",
+          component: <DriverRequest />,
+        },
+        {
+          protected: true,
           name: "Vehicles",
           key: "vehicle",
           route: "/vehicle/types",
@@ -133,6 +142,14 @@ const routes = () => {
       key: "vehicleType",
       route: "/vehicle/types/:id",
       component: <VehicleType />,
+    },
+    {
+      display: false,
+      protected: true,
+      name: "DRequest",
+      key: "DRequest",
+      route: "/driver-request/:id",
+      component: <DRequest />,
     },
     {
       display: false,

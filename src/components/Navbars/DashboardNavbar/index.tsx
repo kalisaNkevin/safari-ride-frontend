@@ -54,7 +54,9 @@ import {
 import getNotifications from "Api/getNotifications";
 import { useDispatch, useSelector } from "react-redux";
 import { setNotifications } from "redux/features/notifications/notificationsSlice";
-import { RootStateNotif } from "redux/store";
+import { RootState, RootStateNotif } from "redux/store";
+import socket from "utils/Socket";
+import { ToastContainer, toast } from "react-toastify";
 
 // Declaring prop types for DashboardNavbar
 interface Props {
@@ -125,6 +127,7 @@ function DashboardNavbar({ absolute, light, isMini }: Props): JSX.Element {
   const dispatchNot = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const notifications = useSelector((state: RootStateNotif) => state.notifications.results);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,12 +141,42 @@ function DashboardNavbar({ absolute, light, isMini }: Props): JSX.Element {
       }
     };
 
+    const handleNewNotification = async (newNotification: {
+      userId: any;
+      title: any;
+      content: string;
+    }) => {
+      if (newNotification.userId === user?.id) {
+        const fetchedNotifications = await getNotifications();
+        dispatchNot(setNotifications(fetchedNotifications));
+        toast.info(`${newNotification.title} - ${newNotification.content}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    };
+
+    // Fetch notifications if the array is empty
     if (notifications.length === 0) {
       fetchData();
     } else {
       setIsLoading(false);
     }
-  }, [dispatch, notifications]);
+
+    // Socket event listener
+    socket.on("newNotification", handleNewNotification);
+
+    // Clean up the socket event listener on component unmount or when dependencies change
+    return () => {
+      socket.off("newNotification", handleNewNotification);
+    };
+  }, [dispatch, notifications, user, setIsLoading]);
 
   return (
     <AppBar
@@ -214,6 +247,18 @@ function DashboardNavbar({ absolute, light, isMini }: Props): JSX.Element {
           </MDBox>
         )}
       </Toolbar>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </AppBar>
   );
 }

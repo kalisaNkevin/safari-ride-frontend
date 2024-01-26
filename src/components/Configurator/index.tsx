@@ -148,7 +148,7 @@ function Configurator(): JSX.Element {
         px={3}
       >
         <MDBox>
-          <MDTypography variant="h5">GOBI Configurator</MDTypography>
+          <MDTypography variant="h5">Safari ride Configurator</MDTypography>
           <MDTypography variant="body2" color="text">
             See our dashboard options.
           </MDTypography>

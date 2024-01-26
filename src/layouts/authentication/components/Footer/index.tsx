@@ -86,12 +86,12 @@ function Footer({ light }: { light?: boolean }): JSX.Element {
                   fontWeight="regular"
                   color={light ? "white" : "dark"}
                 >
-                  Safari ride
+                  Sofari ride
                 </MDTypography>
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link href="/" target="_blank">
+              <Link href="/t" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -102,7 +102,7 @@ function Footer({ light }: { light?: boolean }): JSX.Element {
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link href="'/'" target="_blank">
+              <Link href="/" target="_blank">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
