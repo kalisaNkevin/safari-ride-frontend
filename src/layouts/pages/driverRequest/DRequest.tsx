@@ -35,6 +35,7 @@ import { IUser, setUsers } from "redux/features/users/usersSlice";
 import getDriverDocs from "Api/getDriverDocs";
 import { doc, setDocs, updateDoc } from "redux/features/DriverDocs/DocsSlice";
 import getUsers from "Api/getUsers";
+import BookingCard from "components/Cards/BookingCard";
 
 function DRequest(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -201,7 +202,6 @@ function DRequest(): JSX.Element {
       try {
         const requests = await getDriverDocs();
         dispatch(setDocs(requests));
-
         const userData = await getUsers();
         dispatch(setUsers(userData));
       } catch (error) {
@@ -250,10 +250,8 @@ function DRequest(): JSX.Element {
                       <Card id="DriverRequestTypeDelete">
                         <MDBox
                           pr={3}
-                          display="flex"
                           justifyContent="space-between"
                           alignItems={{ xs: "flex-start", sm: "center" }}
-                          flexDirection={{ xs: "column", sm: "row" }}
                         >
                           <MDBox p={3} lineHeight={1}>
                             <MDBox mb={1}>
@@ -266,6 +264,50 @@ function DRequest(): JSX.Element {
                               will reject the verification.
                             </MDTypography>
                           </MDBox>
+
+                          {request[0].identityImage ? (
+                            <MDBox display="flex" flexDirection={{ xs: "column", sm: "row" }}>
+                              <MDBox mt={2}>
+                                <Grid container spacing={3}>
+                                  <Grid item xs={12} md={6} lg={4}>
+                                    <MDBox mt={3}>
+                                      <BookingCard
+                                        image={request[0].driverLicenceImage}
+                                        title="Drivng licence"
+                                        description=""
+                                        price=""
+                                        location=""
+                                      />
+                                    </MDBox>
+                                  </Grid>
+                                  <Grid item xs={12} md={6} lg={4}>
+                                    <MDBox mt={3}>
+                                      <BookingCard
+                                        image={request[0].identityImage}
+                                        title="Identity card"
+                                        description=""
+                                        price=""
+                                        location=""
+                                      />
+                                    </MDBox>
+                                  </Grid>
+                                  <Grid item xs={12} md={6} lg={4}>
+                                    <MDBox mt={3}>
+                                      <BookingCard
+                                        image={request[0].faceImage}
+                                        title="Face image"
+                                        description=" "
+                                        price=""
+                                        location=""
+                                      />
+                                    </MDBox>
+                                  </Grid>
+                                </Grid>
+                              </MDBox>
+                            </MDBox>
+                          ) : (
+                            ""
+                          )}
                           <MDBox display="flex" flexDirection={{ xs: "column", sm: "row" }}>
                             <MDBox ml={{ xs: 0, sm: 1 }} mt={{ xs: 1, sm: 0 }}>
                               <MDButton

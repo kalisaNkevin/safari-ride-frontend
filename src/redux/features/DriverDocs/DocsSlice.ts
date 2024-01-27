@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export interface doc {
   id: number;
   identity: {
+    faceImage: string;
     result: {
       documentNumber: string;
       firstName: string;
